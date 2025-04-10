@@ -1,0 +1,2 @@
+# rush
+Rust shell.
