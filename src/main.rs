@@ -17,6 +17,12 @@ enum Commands {
         #[arg(value_name = "STRING")]
         str: String,
     },
+    /// List filers in a directory
+    Ls {
+        /// Directory to list files
+        #[arg(value_name = "STRING")]
+        path: Option<String>,
+    }
 }
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -24,7 +30,10 @@ fn main() -> Result<()> {
     match &cli.command {
         Some(Commands::Echo { str }) => {
             rush::commands::echo(str, std::io::stdout());
-        }
+        },
+        Some(Commands::Ls { path }) => {
+            rush::commands::ls(path, std::io::stdout());
+        },
         None => {}
     }
 
