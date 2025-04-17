@@ -7,7 +7,7 @@ pub fn replace_environment(str: &str) -> String {
     for c in str.chars() {
         if in_var {
             if !c.is_alphanumeric() && c != '_' {
-                match environment_value(possible_env.clone()) {
+                match environment_value(&possible_env) {
                     Ok(Some(val)) => {
                         for c in val.chars() {
                             s_builder.push(c);
@@ -15,7 +15,7 @@ pub fn replace_environment(str: &str) -> String {
                     },
                     Ok(None) => {
                         s_builder.push('$');
-                        possible_env.clone().into_iter().for_each(|c| {
+                        let _ = &possible_env.into_iter().for_each(|c| {
                             s_builder.push(c);
                         });
                     },
@@ -23,7 +23,7 @@ pub fn replace_environment(str: &str) -> String {
                     Err(e) => panic!("{}", e),
                 }
                 s_builder.push(c);
-                possible_env.clear();
+                possible_env = Vec::new();
                 in_var = false;
             } else {
                 possible_env.push(c);
@@ -38,7 +38,7 @@ pub fn replace_environment(str: &str) -> String {
     s_builder.into_iter().collect()
 }
 
-fn environment_value(key: Vec<char>) -> Result<Option<String>, VarError>{
+fn environment_value(key: &Vec<char>) -> Result<Option<String>, VarError>{
     let key_s: String = key.into_iter().collect();
 
     match std::env::var(key_s) {

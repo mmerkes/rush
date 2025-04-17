@@ -12,3 +12,14 @@ fn test_echo() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+#[test]
+fn test_ls() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("rush")?;
+    cmd.arg("ls").arg("tests");
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("cli.rs"));
+
+    Ok(())
+}
