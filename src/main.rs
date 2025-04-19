@@ -22,6 +22,9 @@ enum Commands {
         /// Directory to list files
         #[arg(value_name = "STRING")]
         path: Option<String>,
+        /// Do not ignore entries with .
+        #[arg(short, long)]
+        all: bool,
     }
 }
 fn main() -> Result<()> {
@@ -31,8 +34,8 @@ fn main() -> Result<()> {
         Some(Commands::Echo { str }) => {
             rush::commands::echo(str, std::io::stdout());
         },
-        Some(Commands::Ls { path }) => {
-            rush::commands::ls(path, std::io::stdout());
+        Some(Commands::Ls { path, all }) => {
+            rush::commands::ls(path, *all, std::io::stdout());
         },
         None => {}
     }

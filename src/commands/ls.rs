@@ -1,20 +1,17 @@
 use std::fs;
 use std::path::Path;
 
-pub fn execute(maybe_path: &Option<String>, mut writer: impl std::io::Write) {
+pub fn execute(maybe_path: &Option<String>, all: bool, mut writer: impl std::io::Write) {
     let path_s = get_path(maybe_path);
     let path = Path::new(&path_s);
 
-    match fs::read_dir(path) {
-        Ok(entries) => {
-            for entry in entries {
-                if let Ok(entry) = entry {
-                    writeln!(writer, "{}", entry.file_name().to_str().unwrap()).unwrap();
-                }
-            }
-        },
-        Err(e) => {
-            panic!("{}", e);
+    let entries = fs::read_dir(path).unwrap();
+    for entry in entries {
+        let unwrapped_entry = entry.unwrap();
+        let filename = unwrapped_entry.file_name();
+        let f = filename.to_str().unwrap();
+        if !f.starts_with(".") || all {
+            writeln!(writer, "{}", f).unwrap();
         }
     }
 }
